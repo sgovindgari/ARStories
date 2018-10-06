@@ -6,22 +6,74 @@
 //
 
 import UIKit
+import ARKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, ARSCNViewDelegate {
     
+    @IBOutlet var sceneView: ARSCNView!
     @IBOutlet weak var usersCollectionView: UICollectionView!
     
     var userDetails: [UserDetails] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        sceneView.delegate = self
+        
+        // Since we will also capture from the view we will limit ourselves to 30 fps.
+        sceneView.preferredFramesPerSecond = 30
+        // Since we are in a streaming environment, we will render at a relatively low resolution.
+        sceneView.contentScaleFactor = 1
+        
+        // Show feature points, and statistics such as fps and timing information
+        sceneView.showsStatistics = true
+        //sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints, ARSCNDebugOptions.showWorldOrigin]
+        
+        // Create a new scene, and bind it to the view.
+        let scene = SCNScene(named: "art.scnassets/ball.scn")!
+        sceneView.scene = scene
+        
         // Do any additional setup after loading the view, typically from a nib.
         fetchUserData()
+        
+        usersCollectionView.isHidden = true
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        let configuration = ARWorldTrackingConfiguration()
+        sceneView.session.run(configuration)
+    }
+    
+    func session(_ session: ARSession, didUpdate frame: ARFrame) {
+        print("Hello") // <-- does not run here
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        let location = touches.first!.location(in: sceneView)
+        
+        // Let's test if a 3D Object was touch
+        var hitTestOptions = [SCNHitTestOption: Any]()
+        hitTestOptions[SCNHitTestOption.boundingBoxOnly] = true
+        
+        let hitResults: [SCNHitTestResult]  = sceneView.hitTest(location, options: hitTestOptions)
+        if (hitResults.first != nil && hitResults.first?.node.name == "Sphere") {
+            // play vertical video in full screen
+            DispatchQueue.main.async {
+                let vc = self.storyboard?.instantiateViewController(withIdentifier: "ContentView") as! ContentViewController
+                vc.modalPresentationStyle = .overFullScreen
+                vc.pages = self.userDetails
+                vc.currentIndex = 0
+                self.present(vc, animated: true, completion: nil)
+            }
+            
+            return
+        }
     }
     
     // MARK: Private func
