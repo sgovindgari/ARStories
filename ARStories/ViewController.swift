@@ -20,13 +20,11 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         sceneView.delegate = self
         
-        // Since we will also capture from the view we will limit ourselves to 30 fps.
-        sceneView.preferredFramesPerSecond = 30
-        // Since we are in a streaming environment, we will render at a relatively low resolution.
-        sceneView.contentScaleFactor = 1
+        setupCamera()
         
         // Show feature points, and statistics such as fps and timing information
         sceneView.showsStatistics = true
+        sceneView.preferredFramesPerSecond = 60
         //sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints, ARSCNDebugOptions.showWorldOrigin]
         
         let scene = SCNScene(named: "art.scnassets/glowball.scn")!
@@ -49,31 +47,42 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         usersCollectionView.isHidden = true
     }
     
+    func setupCamera() {
+        guard let camera = sceneView.pointOfView?.camera else {
+            fatalError("Expected a valid `pointOfView` from the scene.")
+        }
+        
+        /*
+         Enable HDR camera settings for the most realistic appearance
+         with environmental lighting and physically based materials.
+         */
+        camera.wantsHDR = true
+        camera.exposureOffset = -1
+        camera.minimumExposure = -1
+        camera.maximumExposure = 3
+    }
+    
     private func generateRandomBalls() {
         let scene = SCNScene(named: "art.scnassets/glowball.scn")!
         let node = scene.rootNode.childNode(withName: "Sphere", recursively: true)!
         let parentNode = SCNNode()
         
-        let sadnessNode = deepCopyNode(node: node)
-        sadnessNode.geometry?.firstMaterial?.diffuse.contents = UIColor.blue
-        sadnessNode.geometry?.firstMaterial?.selfIllumination.contents = UIColor.blue
+        let sadnessScene = SCNScene(named: "art.scnassets/sadness.scn")!
+        let sadnessNode = sadnessScene.rootNode.childNode(withName: "Sphere", recursively: true)!
         
-        let angerNode = deepCopyNode(node: node)
-        angerNode.geometry?.firstMaterial?.diffuse.contents = UIColor.red
-        angerNode.geometry?.firstMaterial?.selfIllumination.contents = UIColor.red
+        let angerScene = SCNScene(named: "art.scnassets/anger.scn")!
+        let angerNode = angerScene.rootNode.childNode(withName: "Sphere", recursively: true)!
         
-        let disgustNode = deepCopyNode(node: node)
-        disgustNode.geometry?.firstMaterial?.diffuse.contents = UIColor.green
-        disgustNode.geometry?.firstMaterial?.selfIllumination.contents = UIColor.green
+        let fearScene = SCNScene(named: "art.scnassets/fear.scn")!
+        let fearNode = fearScene.rootNode.childNode(withName: "Sphere", recursively: true)!
         
-        let fearNode = deepCopyNode(node: node)
-        fearNode.geometry?.firstMaterial?.diffuse.contents = UIColor.purple
-        fearNode.geometry?.firstMaterial?.selfIllumination.contents = UIColor.purple
+        let disgustScene = SCNScene(named: "art.scnassets/disgust.scn")!
+        let disgustNode = disgustScene.rootNode.childNode(withName: "Sphere", recursively: true)!
         
-        let emotions = [node, node, node, sadnessNode, node]
+        let emotions = [node, node, node, sadnessNode, node, fearNode, disgustNode, angerNode, sadnessNode]
         var result: [SCNNode] = []
         
-        for j in 1...3 {
+        for j in 1...8 {
             let list = makeList(j)
             for i in list {
                 result.append(emotions[i])
@@ -82,7 +91,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         for i in result {
             let x = drand48() * 1 - 0.5
-            let y = drand48() * 1 - 0.5
+            let y = drand48() * 1 - 1
             let z = drand48() * 1 - 0.5
             let deepCopy = deepCopyNode(node: i)
             deepCopy.position = SCNVector3(x, y, z)
@@ -94,7 +103,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     }
     
     func makeList(_ n: Int) -> [Int] {
-        return (0..<n).map{ _ in Int(arc4random_uniform(4) + 1) }
+        return (0..<n).map{ _ in Int(arc4random_uniform(8) + 1) }
     }
     
     func deepCopyNode(node: SCNNode) -> SCNNode {
