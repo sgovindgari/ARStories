@@ -29,14 +29,81 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         sceneView.showsStatistics = true
         //sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints, ARSCNDebugOptions.showWorldOrigin]
         
-        // Create a new scene, and bind it to the view.
-        let scene = SCNScene(named: "art.scnassets/ball.scn")!
+        let scene = SCNScene(named: "art.scnassets/glowball.scn")!
+        let node = scene.rootNode.childNode(withName: "Sphere", recursively: true)!
+        node.highlight()
         sceneView.scene = scene
+        
+        let particlesNode = SCNNode()
+        let particleSystem = SCNParticleSystem(named: "Stars", inDirectory: "")
+        particlesNode.addParticleSystem(particleSystem!)
+        particlesNode.position = SCNVector3(0, 0, 0)
+        sceneView.scene.rootNode.addChildNode(particlesNode)
+        
+        // Create a new scene, and bind it to the view.
+        generateRandomBalls()
         
         // Do any additional setup after loading the view, typically from a nib.
         fetchUserData()
         
         usersCollectionView.isHidden = true
+    }
+    
+    private func generateRandomBalls() {
+        let scene = SCNScene(named: "art.scnassets/glowball.scn")!
+        let node = scene.rootNode.childNode(withName: "Sphere", recursively: true)!
+        let parentNode = SCNNode()
+        
+        let sadnessNode = deepCopyNode(node: node)
+        sadnessNode.geometry?.firstMaterial?.diffuse.contents = UIColor.blue
+        sadnessNode.geometry?.firstMaterial?.selfIllumination.contents = UIColor.blue
+        
+        let angerNode = deepCopyNode(node: node)
+        angerNode.geometry?.firstMaterial?.diffuse.contents = UIColor.red
+        angerNode.geometry?.firstMaterial?.selfIllumination.contents = UIColor.red
+        
+        let disgustNode = deepCopyNode(node: node)
+        disgustNode.geometry?.firstMaterial?.diffuse.contents = UIColor.green
+        disgustNode.geometry?.firstMaterial?.selfIllumination.contents = UIColor.green
+        
+        let fearNode = deepCopyNode(node: node)
+        fearNode.geometry?.firstMaterial?.diffuse.contents = UIColor.purple
+        fearNode.geometry?.firstMaterial?.selfIllumination.contents = UIColor.purple
+        
+        let emotions = [node, node, node, sadnessNode, node]
+        var result: [SCNNode] = []
+        
+        for j in 1...3 {
+            let list = makeList(j)
+            for i in list {
+                result.append(emotions[i])
+            }
+        }
+        
+        for i in result {
+            let x = drand48() * 1 - 0.5
+            let y = drand48() * 1 - 0.5
+            let z = drand48() * 1 - 0.5
+            let deepCopy = deepCopyNode(node: i)
+            deepCopy.position = SCNVector3(x, y, z)
+            deepCopy.highlight()
+            parentNode.addChildNode(deepCopy)
+        }
+        
+        self.sceneView.scene.rootNode.addChildNode(parentNode)
+    }
+    
+    func makeList(_ n: Int) -> [Int] {
+        return (0..<n).map{ _ in Int(arc4random_uniform(4) + 1) }
+    }
+    
+    func deepCopyNode(node: SCNNode) -> SCNNode {
+        let clone = node.clone()
+        clone.geometry = node.geometry?.copy() as? SCNGeometry
+        if let g = node.geometry {
+            clone.geometry?.materials = g.materials.map{ $0.copy() as! SCNMaterial }
+        }
+        return clone
     }
     
     override func didReceiveMemoryWarning() {

@@ -1,28 +1,16 @@
 {
     "userDetails": [
                     {
-                    "name": "Sabine",
-                    "imageUrl" :"https://randomuser.me/api/portraits/men/82.jpg",
+                    "name": "Jaydev Ajit Kumar",
+                    "imageUrl" :"https://media.licdn.com/dms/image/C5603AQHm-fPVHPzRCQ/profile-displayphoto-shrink_800_800/0?e=1544054400&v=beta&t=C6ChzscGnivZcEkjCKPp19oKmT9u4ZEZjXTzj3lmCAQ",
                     "content": [
                                 {
                                 "type": "video",
-                                "url": "https://storage.googleapis.com/coverr-main/mp4/Travaho.mp4"
+                                "url": "https://s3-eu-west-1.amazonaws.com/pilot-hype/yc2018falldemo.mp4"
                                 },
                                 {
-                                "type": "image",
-                                "url": "https://picsum.photos/640/1136/?image=281"
-                                },
-                                {
-                                "type": "image",
-                                "url": "https://picsum.photos/640/1136/?image=282"
-                                },
-                                {
-                                "type": "video",
-                                "url": "https://storage.googleapis.com/coverr-main/mp4/Beach.mp4"
-                                },
-                                {
-                                "type": "image",
-                                "url": "https://picsum.photos/640/1136/?image=272"
+                                    "type": "image",
+                                    "url": "https://picsum.photos/640/1136/?image=273"
                                 }
                                 ]
                     },
