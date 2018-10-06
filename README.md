@@ -1,41 +1,15 @@
 # ARStories
-It is similar like Instagram Stories, to play the video or show the photo directly of the users account.
-
-<img src="https://media.giphy.com/media/1rP0orpoipBIN0f2E3/giphy.gif" width="264" height="480" align="middle" />
-
 
 ## Getting Started
 ### Prerequisites
 
-To build this demo project using the Instagram-stories for iOS, you need version 8.0 or later of Xcode.
-
-### Usage
-
-- Tap on Video or Photo to skip the current item.
-- Swipe forward or backward to see next/previous story.
-- The Progress bars at the top represent elapsed time 0-5 seconds for image and for videos depends on video length.
-- Pressing on close button take you back to the stories list.
-
-### Resources
-
-- [Lorem Picsum](https://picsum.photos/) Just put your image size (width & height) after our URL and you'll get a placeholder. 
-- [Coverr](https://coverr.co/) unique and beautiful video footage.
-
-## Author
-
-**Antony Raphel** - *Initial work* - [ARCarMovement](https://github.com/antonyraphel/ARCarMovement)
-
-Created by Antony Raphel, [@antonypr717](https://twitter.com/antonypr717) on 06/05/17.
-
-## Contact
-
-Share feedbacks and ideas to improve this project, I would love to hear them out. You can also follow me on [@antonypr717](https://twitter.com/antonypr717).
+To build this demo project using the Instagram-stories for iOS, you need version 10.0 or later of Xcode.
 
 ## License
 
 MIT License
 
-Copyright (c) 2018 Antony Raphel
+Original Code adopted from Instagram Stories by (c) 2018 Antony Raphel
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
